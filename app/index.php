@@ -15,12 +15,12 @@ if(isset($_GET['idlocal'])) {
 	
 }else{
 		$idlocal = '';
-		$nomelocal='';
-		$tipolocal='';
-		$emaillocal='';
-		$fonelocal='';
-		$sitelocal='';
-		$locallocal='';
+		$nomelocal='Nenhum local selecionado.';
+		$tipolocal='Indisponível';
+		$emaillocal='Indisponível';
+		$fonelocal='Indisponível';
+		$sitelocal='Indisponível';
+		$locallocal='Nenhum local selecionado.';
 }
 ?>
 <!DOCTYPE html>
