@@ -1,3 +1,28 @@
+<?php
+include 'dbconnect.php';
+$pdo = Database::connect();
+if(isset($_GET['idlocal'])) {
+	$idlocal = $_GET['idlocal'];
+	$sql = 'SELECT * FROM locais WHERE idLocal='.$idlocal;
+	foreach ($pdo->query($sql) as $row) {
+		$nomelocal=$row['nomeLocal'];
+		$tipolocal=$row['tipoLocal'];
+		$emaillocal=$row['emailLocal'];
+		$fonelocal=$row['foneLocal'];
+		$sitelocal=$row['siteLocal'];
+		$locallocal=$row['localLocal'];
+	}
+	
+}else{
+		$idlocal = '';
+		$nomelocal='';
+		$tipolocal='';
+		$emaillocal='';
+		$fonelocal='';
+		$sitelocal='';
+		$locallocal='';
+}
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,7 +36,11 @@
 	<script src="bootstrap/js/bootstrap.min.js"></script>
 	<script>
 	$(function() {
-		$( "#menuaccordion" ).accordion();
+		$( "#menuaccordion" ).accordion({
+			collapsible: true,
+			active: false,
+			autoHeight: false,
+		});
 	});
 	</script>
 </head>
@@ -43,15 +72,14 @@
 						<li class="dropdown" id="listalocais">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Lista de locais <span class="caret"></span></a>
 							<ul class="dropdown-menu">
-							<?php
-					                       include 'dbconnect.php';
-					                       $pdo = Database::connect();
-					                       $sql = 'SELECT * FROM locais ORDER BY idLocal ASC';
-					                       foreach ($pdo->query($sql) as $row) {
-					                                echo '<li><a href="ler.php?id='.$row['idLocal'].'">'.$row['nomeLocal'].'</a></li>';
-					                       }
-					                       Database::disconnect();
-				                    	  ?>
+								<?php
+								$sql = 'SELECT * FROM locais ORDER BY idLocal ASC';
+								if ($pdo->query($sql)<>"") {
+									foreach ($pdo->query($sql) as $row) {
+										echo '<li><a href="?idlocal='.$row['idLocal'].'">'.$row['nomeLocal'].'</a></li>';
+									}
+								}
+								?>
 								<!--<li role="separator" class="divider"></li>-->
 							</ul>
 						</li>
@@ -68,59 +96,57 @@
 		<div class="row">
 			<div role="main" class="col-md-7" style="text-align: center; vertical-align: middle;">
 <!--Mapa
-<style>.embed-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; } .embed-container iframe, .embed-container object, .embed-container embed { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }</style><div class='embed-container'><iframe src='https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d586.1180012791928!2d-34.944347133276615!3d-8.017843997144892!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e1!3m2!1spt-BR!2sus!4v1434657593582' width='600' height='450' frameborder='0' style='border:0'></iframe></div>-->
-			</div>
-			<div role="complementary" class="col-md-5">
-				<div id="menuaccordion">
-					<h3 class="btn btn-primary btn-lg btn-block menuaccordion">Localiza&ccedil;&atilde;o</h3>
-					<div class="accordioncontent">
-						<p>
-							Vai l&aacute; no final, dobra, e depois vira a esquerda
-						</p>
-					</div>
-					<h3 class="btn btn-primary btn-lg btn-block menuaccordion">Hist&oacute;ria</h3>
-					<div class="accordioncontent">
-						<p>
-							Once upon a time...
-						</p>
-					</div>
-					<h3 class="btn btn-primary btn-lg btn-block menuaccordion">Cursos</h3>
-					<div class="accordioncontent">
-						<p>
-							Nam enim risus, molestie et, porta ac, aliquam ac, risus. Quisque lobortis.
-							Phasellus pellentesque purus in massa. Aenean in pede. Phasellus ac libero
-							ac tellus pellentesque semper. Sed ac felis. Sed commodo, magna quis
-							lacinia ornare, quam ante aliquam nisi, eu iaculis leo purus venenatis dui.
-						</p>
-						<ul>
-							<li>List item one</li>
-							<li>List item two</li>
-							<li>List item three</li>
-						</ul>
-					</div>
-					<h3 class="btn btn-primary btn-lg btn-block menuaccordion">Informa&ccedil;&otilde;es</h3>
-					<div class="accordioncontent">
-						<p>
-							Cras dictum. Pellentesque habitant morbi tristique senectus et netus
-							et malesuada fames ac turpis egestas. Vestibulum ante ipsum primis in
-							faucibus orci luctus et ultrices posuere cubilia Curae; Aenean lacinia
-							mauris vel est.
-						</p>
-						<p>
-							Suspendisse eu nisl. Nullam ut libero. Integer dignissim consequat lectus.
-							Class aptent taciti sociosqu ad litora torquent per conubia nostra, per
-							inceptos himenaeos.
-						</p>
-					</div>
-				</div>
-			</div>
+	<style>.embed-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; } .embed-container iframe, .embed-container object, .embed-container embed { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }</style><div class='embed-container'><iframe src='https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d586.1180012791928!2d-34.944347133276615!3d-8.017843997144892!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e1!3m2!1spt-BR!2sus!4v1434657593582' width='600' height='450' frameborder='0' style='border:0'></iframe></div>-->
+</div>
+<div role="complementary" class="col-md-5">
+	<div id="menuaccordion">
+		<h3 class="btn btn-primary btn-lg btn-block menuaccordion">Localiza&ccedil;&atilde;o</h3>
+		<div class="accordioncontent">
+			<p align="justify"><?php echo $locallocal; ?></p>
 		</div>
-		<footer class="row">
-			&copy; 2015 loc.dot. Todos os direitos reservados.
-		</footer>
+		<h3 class="btn btn-primary btn-lg btn-block menuaccordion">Hist&oacute;ria</h3>
+		<div class="accordioncontent">
+			<p>
+				Once upon a time...
+			</p>
+		</div>
+		<h3 class="btn btn-primary btn-lg btn-block menuaccordion">Cursos</h3>
+		<div class="accordioncontent">
+			<p>
+				Nam enim risus, molestie et, porta ac, aliquam ac, risus. Quisque lobortis.
+				Phasellus pellentesque purus in massa. Aenean in pede. Phasellus ac libero
+				ac tellus pellentesque semper. Sed ac felis. Sed commodo, magna quis
+				lacinia ornare, quam ante aliquam nisi, eu iaculis leo purus venenatis dui.
+			</p>
+			<ul>
+				<li>List item one</li>
+				<li>List item two</li>
+				<li>List item three</li>
+			</ul>
+		</div>
+		<h3 class="btn btn-primary btn-lg btn-block menuaccordion">Informa&ccedil;&otilde;es</h3>
+		<div class="accordioncontent">
+			<p>
+				<?php
+					echo "<b>Tipo de local:</b> ".$tipolocal.
+					"<br><b>Telefone:</b> ".$fonelocal.
+					"<br><b>E-mail:</b> ".$emaillocal.
+					"<br><b>Site :</b> ".$sitelocal;
+				?>
+			</p>
+		</div>
 	</div>
+</div>
+</div>
+<footer class="row">
+	&copy; 2015 loc.dot. Todos os direitos reservados.
+</footer>
+</div>
 
-	<!-- jQuery (necessario para os plugins Javascript Bootstrap) -->
+<!-- jQuery (necessario para os plugins Javascript Bootstrap) -->
 
 </body>
 </html>
+<?php
+Database::disconnect();
+?>

@@ -2,7 +2,7 @@
 class Database
 {
     private static $dbName = 'robug851_locdot' ;
-    private static $dbHost = 'localhost' ;
+    private static $dbHost = '192.185.177.67:3306' ;
     private static $dbUsername = 'robug851_locdot';
     private static $dbUserPassword = 'adminlocdot123';
      
