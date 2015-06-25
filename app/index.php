@@ -102,7 +102,7 @@ if(isset($_GET['idlocal'])) {
 	<div id="menuaccordion">
 		<h3 class="btn btn-primary btn-lg btn-block menuaccordion">Localiza&ccedil;&atilde;o</h3>
 		<div class="accordioncontent">
-			<p align="justify"><?php echo $locallocal; ?></p>
+			<p align="justify"><?php echo $locallocal <> '' ? $locallocal : "Indisponível"; ?></p>
 		</div>
 		<h3 class="btn btn-primary btn-lg btn-block menuaccordion">Hist&oacute;ria</h3>
 		<div class="accordioncontent">
@@ -128,10 +128,14 @@ if(isset($_GET['idlocal'])) {
 		<div class="accordioncontent">
 			<p>
 				<?php
-					echo "<b>Tipo de local:</b> ".$tipolocal.
-					"<br><b>Telefone:</b> ".$fonelocal.
-					"<br><b>E-mail:</b> ".$emaillocal.
-					"<br><b>Site :</b> ".$sitelocal;
+					echo "<b>Tipo de local:</b> ";
+					echo $tipolocal <> '' ? $tipolocal : "Indisponível";
+					echo "<br><b>Telefone:</b> ";
+					echo $fonelocal <> '' ? $fonelocal : "Indisponível";
+					echo "<br><b>E-mail:</b> ";
+					echo $emaillocal <> '' ? $emaillocal : "Indisponível";
+					echo "<br><b>Site :</b> ";
+					echo $sitelocal <> '' ? $sitelocal : "Indisponível";
 				?>
 			</p>
 		</div>
