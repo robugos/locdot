@@ -41,6 +41,8 @@ if(isset($_GET['idlocal'])) {
 			active: false,
 			autoHeight: false,
 		});
+		
+		$( "#draggable" ).draggable();
 	});
 	</script>
 </head>
@@ -68,7 +70,7 @@ if(isset($_GET['idlocal'])) {
 				<!-- Collect the nav links, forms, and other content for toggling -->
 				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 					<ul class="nav navbar-nav navbar-left">
-						<li class="active"><a href="">Home <span class="sr-only">(current)</span></a></li>
+						<li class="active"><a href="./">Home <span class="sr-only">(current)</span></a></li>
 						<li class="dropdown" id="listalocais">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Lista de locais <span class="caret"></span></a>
 							<ul class="dropdown-menu">
@@ -95,8 +97,7 @@ if(isset($_GET['idlocal'])) {
 		</nav>
 		<div class="row">
 			<div role="main" class="col-md-7" style="text-align: center; vertical-align: middle;">
-<!--Mapa
-	<style>.embed-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; } .embed-container iframe, .embed-container object, .embed-container embed { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }</style><div class='embed-container'><iframe src='https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d586.1180012791928!2d-34.944347133276615!3d-8.017843997144892!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e1!3m2!1spt-BR!2sus!4v1434657593582' width='600' height='450' frameborder='0' style='border:0'></iframe></div>-->
+	<style>.embed-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; } .embed-container iframe, .embed-container object, .embed-container embed { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }</style><div class='embed-container'><div id="draggable" style="width: 600px; height: 450px; padding: 0.5em;" class="ui-widget-content"><?php include("map.php"); ?><!--<iframe src='map.php' width='600' height='450' frameborder='0' style='border:0'></iframe>--><p>teste</p></div></div>
 </div>
 <div role="complementary" class="col-md-5">
 	<div id="menuaccordion">
