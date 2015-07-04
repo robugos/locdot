@@ -21,6 +21,8 @@ class Database
         try
         {
           self::$cont =  new PDO( "mysql:host=".self::$dbHost.";"."dbname=".self::$dbName, self::$dbUsername, self::$dbUserPassword); 
+
+          self::$cont -> exec("set names utf8");
         }
         catch(PDOException $e)
         {
