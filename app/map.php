@@ -1,5 +1,5 @@
 ﻿<div id="draggable" class="ui-widget-content">
-<img id="Image-Maps-Com-image-maps-2015-06-25-083707" src="http://www.image-maps.com/m/private/10737/56147-cnbstniafbbv3ldv7fqeetd2i7_untitled-1.png" border="0" width="2482" height="3510" orgWidth="2482" orgHeight="3510" usemap="#image-maps-2015-06-25-083707" alt="" />
+<img id="Image-Maps-Com-image-maps-2015-06-25-083707" src="images/56147-cnbstniafbbv3ldv7fqeetd2i7_untitled-1.png" border="0" width="2482" height="3510" orgWidth="2482" orgHeight="3510" usemap="#image-maps-2015-06-25-083707" alt="" />
 <map name="image-maps-2015-06-25-083707" id="ImageMapsCom-image-maps-2015-06-25-083707">
 
 <area shape="rect" coords="2480,3508,2482,3510" alt="Image Map" style="outline:none;" title="Image Map" href="http://www.image-maps.com/index.php?aff=mapped_users_10737" />

@@ -28,6 +28,7 @@ if(isset($_GET['idlocal'])) {
 <head>
 	<title>loc.dot</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<!-- Bootstrap -->
 	<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
 	<link href="bootstrap/css/style.css" rel="stylesheet">
@@ -35,10 +36,25 @@ if(isset($_GET['idlocal'])) {
 	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 	<script src="bootstrap/js/bootstrap.min.js"></script>
 	<script>
+	function getParam(name) {
+		var query = location.search.substring(1);
+		if (query.length) {
+			var parts = query.split('&');
+			for (var i = 0; i < parts.length; i++) {
+				var pos = parts[i].indexOf('=');
+				if (parts[i].substring(0,pos) == name) {
+					return parts[i].substring(pos+1);
+				}
+			}
+		}
+		return false;
+	}
+
 	$(function() {
+		var defaultPanel = parseInt(getParam('panel'));
 		$( "#menuaccordion" ).accordion({
 			collapsible: true,
-			active: false,
+			active: defaultPanel,
 			autoHeight: false,
 		});
 		
@@ -78,7 +94,7 @@ if(isset($_GET['idlocal'])) {
 								$sql = 'SELECT * FROM locais ORDER BY idLocal ASC';
 								if ($pdo->query($sql)<>"") {
 									foreach ($pdo->query($sql) as $row) {
-										echo '<li><a href="?idlocal='.$row['idLocal'].'">'.$row['nomeLocal'].'</a></li>';
+										echo '<li><a href="?idlocal='.$row['idLocal'].'&panel=0">'.$row['nomeLocal'].'</a></li>';
 									}
 								}
 								?>
@@ -113,17 +129,18 @@ if(isset($_GET['idlocal'])) {
 		</div>
 		<h3 class="btn btn-primary btn-lg btn-block menuaccordion">Cursos</h3>
 		<div class="accordioncontent">
-			<p>
-				Nam enim risus, molestie et, porta ac, aliquam ac, risus. Quisque lobortis.
-				Phasellus pellentesque purus in massa. Aenean in pede. Phasellus ac libero
-				ac tellus pellentesque semper. Sed ac felis. Sed commodo, magna quis
-				lacinia ornare, quam ante aliquam nisi, eu iaculis leo purus venenatis dui.
-			</p>
-			<ul>
-				<li>List item one</li>
-				<li>List item two</li>
-				<li>List item three</li>
-			</ul>
+			<p><ul>
+				<?php
+					$sql = "SELECT * FROM locais_cursos, cursos WHERE locais_cursos.idLocal='$idlocal' AND locais_cursos.idCurso = cursos.idCurso";
+					if ($pdo->query($sql)->rowCount() > 0) {
+						foreach ($pdo->query($sql) as $row) {
+							echo '<li><a href="'.$row['siteCurso'].'" alt="'.$row['nomeCurso'].'" title="'.$row['nomeCurso'].'">'.$row['nomeCurso'].'</a></li>';
+						}
+					}else{
+						echo "Este local não possui cursos associados.";
+					}
+					?>
+			</ul></p>
 		</div>
 		<h3 class="btn btn-primary btn-lg btn-block menuaccordion">Informa&ccedil;&otilde;es</h3>
 		<div class="accordioncontent">
