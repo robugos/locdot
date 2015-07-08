@@ -14,13 +14,13 @@ if(isset($_GET['idlocal'])) {
 	}
 	
 }else{
-		$idlocal = '';
-		$nomelocal='Nenhum local selecionado.';
-		$tipolocal='Indisponível';
-		$emaillocal='Indisponível';
-		$fonelocal='Indisponível';
-		$sitelocal='Indisponível';
-		$locallocal='Nenhum local selecionado.';
+	$idlocal = '';
+	$nomelocal='Nenhum local selecionado.';
+	$tipolocal='Indisponível';
+	$emaillocal='Indisponível';
+	$fonelocal='Indisponível';
+	$sitelocal='Indisponível';
+	$locallocal='Nenhum local selecionado.';
 }
 ?>
 <!DOCTYPE html>
@@ -29,12 +29,16 @@ if(isset($_GET['idlocal'])) {
 	<title>loc.dot</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<!-- Bootstrap -->
 	<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
 	<link href="bootstrap/css/style.css" rel="stylesheet">
 	<script src="bootstrap/js/jquery.js"></script>
+	<script src="bootstrap/js/jquery-1.9.1.min.js"></script>
+	<script src="bootstrap/js/easyResponsiveTabs.js"></script>
 	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 	<script src="bootstrap/js/bootstrap.min.js"></script>
+	<script src="bootstrap/js/easy-responsive-tabs.js"></script>
+
+
 	<script>
 	function getParam(name) {
 		var query = location.search.substring(1);
@@ -49,6 +53,23 @@ if(isset($_GET['idlocal'])) {
 		}
 		return false;
 	}
+
+	$(document).ready(function() {
+        //Horizontal Tab
+        $('#tab').easyResponsiveTabs({
+            type: 'default', //Types: default, vertical, accordion
+            width: 'auto', //auto or any width like 600px
+            fit: true, // 100% fit in a container
+            tabidentify: 'hor_1', // The tab groups identifier
+            activate: function(event) { // Callback function if tab is switched
+            	var $tab = $(this);
+            	var $info = $('#nested-tabInfo');
+            	var $name = $('span', $info);
+            	$name.text($tab.text());
+            	$info.show();
+            }
+        });
+    });
 
 	$(function() {
 		var defaultPanel = parseInt(getParam('panel'));
@@ -66,9 +87,8 @@ if(isset($_GET['idlocal'])) {
 	<div class"container-fluid">
 		<header class="row">
 			<figure class="banner">
-				<img src="./images/banner.png"/>
+				<img src="./images/locdotlogo_small.png"/>
 			</figure>
-			<h1>loc.dot</h1>
 		</header>
 		<nav class="navbar navbar-default main">
 			<div class="container-fluid">
@@ -94,7 +114,7 @@ if(isset($_GET['idlocal'])) {
 								$sql = 'SELECT * FROM locais ORDER BY idLocal ASC';
 								if ($pdo->query($sql)<>"") {
 									foreach ($pdo->query($sql) as $row) {
-										echo '<li><a href="?idlocal='.$row['idLocal'].'&panel=0">'.$row['nomeLocal'].'</a></li>';
+										echo '<li><a href="?idlocal='.$row['idLocal'].'">'.$row['nomeLocal'].'</a></li>';
 									}
 								}
 								?>
@@ -112,60 +132,67 @@ if(isset($_GET['idlocal'])) {
 			</div><!-- /.container-fluid -->
 		</nav>
 		<div class="row">
-			<div role="main" class="col-md-7" style="text-align: center; vertical-align: middle;">
-	<style>.embed-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; } .embed-container iframe, .embed-container object, .embed-container embed { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }</style><div class='embed-container'><div id="draggable" style="width: 600px; height: 450px; padding: 0.5em;" class="ui-widget-content"><?php include("map.php"); ?><!--<iframe src='map.php' width='600' height='450' frameborder='0' style='border:0'></iframe>--><p>teste</p></div></div>
-</div>
-<div role="complementary" class="col-md-5">
-	<div id="menuaccordion">
-		<h3 class="btn btn-primary btn-lg btn-block menuaccordion">Localiza&ccedil;&atilde;o</h3>
-		<div class="accordioncontent">
-			<p align="justify"><?php echo $locallocal <> '' ? $locallocal : "Indisponível"; ?></p>
+			<div role="complementary" class="col-md-7">
+				<div class='embed-container'>
+						<?php include("map.php"); ?>
+						<!--<iframe src='map.php' width='600' height='450' frameborder='0' style='border:0'></iframe>-->
+				</div>
+			</div>
+			<div role="main" class="col-md-5">
+				<div id="tab">
+					<ul class="resp-tabs-list hor_1">
+						<li>Localiza&ccedil;&atilde;o</li>
+						<li>Hist&oacute;ria</li>
+						<li>Cursos</li>
+						<li>Informa&ccedil;&otilde;es</li>
+					</ul>
+					<div class="resp-tabs-container hor_1">
+						<div>
+							<p align="justify"><?php echo $locallocal <> '' ? $locallocal : "Indisponível"; ?></p>
+						</div>
+						<div>
+							<p>
+								Once upon a time...
+							</p>
+						</div>
+						<div>
+							<p><ul>
+								<?php
+								$sql = "SELECT * FROM locais_cursos, cursos WHERE locais_cursos.idLocal='$idlocal' AND locais_cursos.idCurso = cursos.idCurso";
+								if ($pdo->query($sql)->rowCount() > 0) {
+									foreach ($pdo->query($sql) as $row) {
+										echo '<li style="list-style: none;"><a href="'.$row['siteCurso'].'" alt="'.$row['nomeCurso'].'" title="'.$row['nomeCurso'].'" target="_blank">'.$row['nomeCurso'].'</a></li>';
+									}
+								}else{
+									echo "Este local não possui cursos associados.";
+								}
+								?>
+							</ul></p>
+						</div>
+						<div>
+							<p>
+								<?php
+								echo "<b>Tipo de local:</b> ";
+								echo $tipolocal <> '' ? $tipolocal : "Indisponível";
+								echo "<br><b>Telefone:</b> ";
+								echo $fonelocal <> '' ? $fonelocal : "Indisponível";
+								echo "<br><b>E-mail:</b> ";
+								echo $emaillocal <> '' ? $emaillocal : "Indisponível";
+								echo "<br><b>Site :</b> ";
+								echo $sitelocal <> '' ? $sitelocal : "Indisponível";
+								?>
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
-		<h3 class="btn btn-primary btn-lg btn-block menuaccordion">Hist&oacute;ria</h3>
-		<div class="accordioncontent">
-			<p>
-				Once upon a time...
-			</p>
-		</div>
-		<h3 class="btn btn-primary btn-lg btn-block menuaccordion">Cursos</h3>
-		<div class="accordioncontent">
-			<p><ul>
-				<?php
-					$sql = "SELECT * FROM locais_cursos, cursos WHERE locais_cursos.idLocal='$idlocal' AND locais_cursos.idCurso = cursos.idCurso";
-					if ($pdo->query($sql)->rowCount() > 0) {
-						foreach ($pdo->query($sql) as $row) {
-							echo '<li><a href="'.$row['siteCurso'].'" alt="'.$row['nomeCurso'].'" title="'.$row['nomeCurso'].'">'.$row['nomeCurso'].'</a></li>';
-						}
-					}else{
-						echo "Este local não possui cursos associados.";
-					}
-					?>
-			</ul></p>
-		</div>
-		<h3 class="btn btn-primary btn-lg btn-block menuaccordion">Informa&ccedil;&otilde;es</h3>
-		<div class="accordioncontent">
-			<p>
-				<?php
-					echo "<b>Tipo de local:</b> ";
-					echo $tipolocal <> '' ? $tipolocal : "Indisponível";
-					echo "<br><b>Telefone:</b> ";
-					echo $fonelocal <> '' ? $fonelocal : "Indisponível";
-					echo "<br><b>E-mail:</b> ";
-					echo $emaillocal <> '' ? $emaillocal : "Indisponível";
-					echo "<br><b>Site :</b> ";
-					echo $sitelocal <> '' ? $sitelocal : "Indisponível";
-				?>
-			</p>
-		</div>
+		<footer class="row">
+			&copy; 2015 loc.dot. Todos os direitos reservados.
+		</footer>
 	</div>
-</div>
-</div>
-<footer class="row">
-	&copy; 2015 loc.dot. Todos os direitos reservados.
-</footer>
-</div>
 
-<!-- jQuery (necessario para os plugins Javascript Bootstrap) -->
+	<!-- jQuery (necessario para os plugins Javascript Bootstrap) -->
 
 </body>
 </html>
