@@ -6,6 +6,9 @@ html {
 }
 body {
 	margin: 0;
+	font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;
+	-ms-text-size-adjust: 100%;
+	-webkit-text-size-adjust: 100%;
 }
 html, body {
 	width: auto !important;
@@ -445,6 +448,7 @@ h1,
 }
 h2,
 .h2 {
+	font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;
 	font-size: 30px;
 }
 h3,
@@ -3811,6 +3815,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 	}
 }
 @media (min-width: 768px) {
+
 	.navbar-nav {
 		float: left;
 		margin: 0;
@@ -5787,7 +5792,13 @@ header.row {
 
 footer {
 	font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;
+}
+
+footer.row {
+	background-color: #1e2b4f;
+	vertical-align: middle;
 	text-align: center;
+	color: #ffffff;
 }
 
 div#menuaccordion {
@@ -5825,6 +5836,15 @@ nav.main {
         left: 0;
         width: 100% !important;
         height: 100% !important;
+}
+
+.btn-li {
+	-webkit-border-bottom-left-radius: 0px;
+	-webkit-border-bottom-right-radius: 0px;
+	-moz-border-radius-bottomleft: 0px;
+	-moz-border-radius-bottomright: 0px;
+	border-bottom-left-radius: 0px;
+	border-bottom-right-radius: 0px;
 }
 
 /*container*/ 

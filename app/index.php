@@ -15,7 +15,7 @@ if(isset($_GET['idlocal'])) {
 	
 }else{
 	$idlocal = '';
-	$nomelocal='Nenhum local selecionado.';
+	$nomelocal='';
 	$tipolocal='Indisponível';
 	$emaillocal='Indisponível';
 	$fonelocal='Indisponível';
@@ -37,9 +37,34 @@ if(isset($_GET['idlocal'])) {
 	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 	<script src="bootstrap/js/bootstrap.min.js"></script>
 	<script src="bootstrap/js/easy-responsive-tabs.js"></script>
+	<script type="text/javascript" src="bootstrap/js/jquery.zclip.js"></script>
+
+	<link rel="icon" type="image/png" href="images/favicon.png" />
 
 
 	<script>
+
+	$(document).ready(function(){
+
+    $('a#copy-description').zclip({
+        path:'http://robugos.com/locdot/app/bootstrap/js/ZeroClipboard.swf',
+        copy:$('p#description').text(),
+    });
+
+    // The link with ID "copy-description" will copy
+    // the text of the paragraph with ID "description"
+
+
+    $('a#copy-dynamic').zclip({
+        path:'http://robugos.com/locdot/app/bootstrap/js/ZeroClipboard.swf',
+        copy:function(){return $('p#dynamic').val();}
+    });
+
+    // The link with ID "copy-dynamic" will copy the current value
+    // of a dynamically changing input with the ID "dynamic"
+
+});
+
 	function getParam(name) {
 		var query = location.search.substring(1);
 		if (query.length) {
@@ -71,14 +96,7 @@ if(isset($_GET['idlocal'])) {
         });
     });
 
-	$(function() {
-		var defaultPanel = parseInt(getParam('panel'));
-		$( "#menuaccordion" ).accordion({
-			collapsible: true,
-			active: defaultPanel,
-			autoHeight: false,
-		});
-		
+	$(function() {		
 		$( "#draggable" ).draggable();
 	});
 	</script>
@@ -87,7 +105,7 @@ if(isset($_GET['idlocal'])) {
 	<div class"container-fluid">
 		<header class="row">
 			<figure class="banner">
-				<img src="./images/locdotlogo_small.png"/>
+				<img src="./images/locdotlogo_small.png" style="max-width:100%;height:auto;" />
 			</figure>
 		</header>
 		<nav class="navbar navbar-default main">
@@ -122,6 +140,9 @@ if(isset($_GET['idlocal'])) {
 							</ul>
 						</li>
 					</ul>
+					<ul class="nav navbar-nav navbar-right">
+						<li><a href="#"><?php echo $nomelocal <> '' ? "Você está em <b>".$nomelocal : ""; ?></b></a></li>
+					</ul>
 					<!--<form class="navbar-form navbar-left" role="search">
 						<div class="form-group">
 							<input type="text" class="form-control" placeholder="Search">
@@ -133,6 +154,7 @@ if(isset($_GET['idlocal'])) {
 		</nav>
 		<div class="row">
 			<div role="complementary" class="col-md-7">
+				<div style="position: absolute;z-index:10;"><h2 class="h2" style="margin-left:20px;"><?php echo $nomelocal <> "" ? $nomelocal : "Selecione um local para começar."; ?></h2></div>
 				<div class='embed-container'>
 						<?php include("map.php"); ?>
 						<!--<iframe src='map.php' width='600' height='450' frameborder='0' style='border:0'></iframe>-->
@@ -141,14 +163,17 @@ if(isset($_GET['idlocal'])) {
 			<div role="main" class="col-md-5">
 				<div id="tab">
 					<ul class="resp-tabs-list hor_1">
-						<li>Localiza&ccedil;&atilde;o</li>
-						<li>Hist&oacute;ria</li>
-						<li>Cursos</li>
-						<li>Informa&ccedil;&otilde;es</li>
+						<li class="btn btn-default btn-lg btn-li">Localiza&ccedil;&atilde;o</li>
+						<li class="btn btn-default btn-lg btn-li">Hist&oacute;ria</li>
+						<li class="btn btn-default btn-lg btn-li">Cursos</li>
+						<li class="btn btn-default btn-lg btn-li">Informa&ccedil;&otilde;es</li>
 					</ul>
 					<div class="resp-tabs-container hor_1">
 						<div>
-							<p align="justify"><?php echo $locallocal <> '' ? $locallocal : "Indisponível"; ?></p>
+							<p align="justify" id="description"><?php echo $locallocal <> '' ? $locallocal : "Indisponível"; ?></p>
+							<p align="center" style="margin:10px;">
+								<a href="#" id="copy-description" class="btn btn-warning btn-lg">Copiar localiza&ccedil;&atilde;o</a>
+							</p>
 						</div>
 						<div>
 							<p>
@@ -161,7 +186,7 @@ if(isset($_GET['idlocal'])) {
 								$sql = "SELECT * FROM locais_cursos, cursos WHERE locais_cursos.idLocal='$idlocal' AND locais_cursos.idCurso = cursos.idCurso";
 								if ($pdo->query($sql)->rowCount() > 0) {
 									foreach ($pdo->query($sql) as $row) {
-										echo '<li style="list-style: none;"><a href="'.$row['siteCurso'].'" alt="'.$row['nomeCurso'].'" title="'.$row['nomeCurso'].'" target="_blank">'.$row['nomeCurso'].'</a></li>';
+										echo '<li style="list-style: none; margin:10px;"><a class="btn btn-warning btn-lg btn-block" href="'.$row['siteCurso'].'" alt="'.$row['nomeCurso'].'" title="'.$row['nomeCurso'].'" target="_blank">'.$row['nomeCurso'].'</a></li>';
 									}
 								}else{
 									echo "Este local não possui cursos associados.";
@@ -170,18 +195,26 @@ if(isset($_GET['idlocal'])) {
 							</ul></p>
 						</div>
 						<div>
-							<p>
-								<?php
-								echo "<b>Tipo de local:</b> ";
-								echo $tipolocal <> '' ? $tipolocal : "Indisponível";
-								echo "<br><b>Telefone:</b> ";
-								echo $fonelocal <> '' ? $fonelocal : "Indisponível";
-								echo "<br><b>E-mail:</b> ";
-								echo $emaillocal <> '' ? $emaillocal : "Indisponível";
-								echo "<br><b>Site :</b> ";
-								echo $sitelocal <> '' ? $sitelocal : "Indisponível";
-								?>
-							</p>
+							<table class="table table-hover">
+								<tbody>
+									<tr>
+										<td class="col-md-2"><b>Tipo de local:</b></td>
+										<td class="col-md-10"><?php echo $tipolocal <> '' ? $tipolocal : "Indisponível"; ?></td>
+									</tr>
+									<tr>
+										<td class="col-md-2"><b>Telefone:</b></td>
+										<td class="col-md-10"><?php echo $fonelocal <> '' ? $fonelocal : "Indisponível"; ?></td>
+									</tr>
+									<tr>
+										<td class="col-md-2"><b>E-mail:</b></td>
+										<td class="col-md-10"><?php $emaillocal <> '' ? $emaillocal : "Indisponível"; ?></td>
+									</tr>
+									<tr>
+										<td class="col-md-2"><b>Site:</b></td>
+										<td class="col-md-10"><?php echo $sitelocal <> '' ? "<a href=".$sitelocal." target='_blank'>".$sitelocal."</a>" : "Indisponível"; ?></td>
+									</tr>
+								</tbody>
+							</table>
 						</div>
 					</div>
 				</div>

@@ -63,7 +63,7 @@
 
                 //Assigning the h2 markup to accordion title
                 var $tabItemh2;
-                $respTabs.find('.resp-tab-content.' + options.tabidentify).before("<h2 class='resp-accordion " + options.tabidentify + "' role='tab'><span class='resp-arrow'></span></h2>");
+                $respTabs.find('.resp-tab-content.' + options.tabidentify).before("<h2 class='btn btn-default btn-lg btn-li resp-accordion " + options.tabidentify + "' role='tab'><span class='resp-arrow'></span></h2>");
 
                 $respTabs.find('.resp-tab-content.' + options.tabidentify).prev("h2").css({
                     'background-color': options.inactive_bg,

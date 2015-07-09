@@ -84,7 +84,7 @@
                             }
 							
 			    o.removeClass('hover');
-                            alert("Copied text to clipboard:\n\n " + text);
+                            //alert("Copied text to clipboard:\n\n " + text);
                         }
 
                         if (settings.clickAfter) {
