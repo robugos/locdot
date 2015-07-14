@@ -94,18 +94,20 @@ if(isset($_GET['idlocal'])) {
             	$info.show();
             }
         });
+        
+        $('#lpeditor').load(function(){
+                $("#lpeditor").contents().find(".draggable").draggable({
+                    iframeFix: true,
+                });
+            }); 
     });
-
-	$(function() {		
-		$( "#draggable" ).draggable();
-	});
 	</script>
 </head>
 <body>
 	<div class"container-fluid">
 		<header class="row">
 			<figure class="banner">
-				<img src="./images/locdotlogo_small.png" style="max-width:100%;height:auto;" />
+				<img src="./images/locdotlogo_smaller.png" style="max-width:100%;height:auto;" />
 			</figure>
 		</header>
 		<nav class="navbar navbar-default main">
@@ -154,10 +156,10 @@ if(isset($_GET['idlocal'])) {
 		</nav>
 		<div class="row">
 			<div role="complementary" class="col-md-7">
-				<div style="position: absolute;z-index:10;"><h2 class="h2" style="margin-left:20px;"><?php echo $nomelocal <> "" ? $nomelocal : "Selecione um local para começar."; ?></h2></div>
+				<div style="position: absolute;z-index:10; margin-top:20px; margin-left:20px;"><button id="zoomais" class="btn btn-warning btn-sm" style="width:40px; height:40px; line-height: 30px; margin:5px;">+</button><br><button id="zoomenos" class="btn btn-warning btn-sm" style="width:40px; height:40px; line-height: 30px; margin:5px;">-</button></div>
 				<div class='embed-container'>
-						<?php include("map.php"); ?>
-						<!--<iframe src='map.php' width='600' height='450' frameborder='0' style='border:0'></iframe>-->
+						<!--< ?php include("map.php"); ?>-->
+						<iframe src='map.php' width='600' height='450' frameborder='0' style='border:0' id="lpeditor" scrolling="no"></iframe>
 				</div>
 			</div>
 			<div role="main" class="col-md-5">
