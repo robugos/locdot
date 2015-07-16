@@ -11,6 +11,8 @@ if(isset($_GET['idlocal'])) {
 		$fonelocal=$row['foneLocal'];
 		$sitelocal=$row['siteLocal'];
 		$locallocal=$row['localLocal'];
+		$objetivolocal=$row['objetivoLocal'];
+		$informacoeslocal=$row['informacoesLocal'];
 	}
 	
 }else{
@@ -156,7 +158,6 @@ if(isset($_GET['idlocal'])) {
 		</nav>
 		<div class="row">
 			<div role="complementary" class="col-md-7">
-				<div style="position: absolute;z-index:10; margin-top:20px; margin-left:20px;"><button id="zoomais" class="btn btn-warning btn-sm" style="width:40px; height:40px; line-height: 30px; margin:5px;">+</button><br><button id="zoomenos" class="btn btn-warning btn-sm" style="width:40px; height:40px; line-height: 30px; margin:5px;">-</button></div>
 				<div class='embed-container'>
 						<!--< ?php include("map.php"); ?>-->
 						<iframe src='map.php' width='600' height='450' frameborder='0' style='border:0' id="lpeditor" scrolling="no"></iframe>
@@ -178,8 +179,8 @@ if(isset($_GET['idlocal'])) {
 							</p>
 						</div>
 						<div>
-							<p>
-								Once upon a time...
+							<p align="justify" id="historico">
+								<?php echo $informacoeslocal <> '' ? $informacoeslocal : "Indisponível"; ?>
 							</p>
 						</div>
 						<div>
