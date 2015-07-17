@@ -1,4 +1,6 @@
 <?php
+require_once 'local.class.php';
+require_once 'conexao.class.php';
 include 'dbconnect.php';
 $pdo = Database::connect();
 if(isset($_GET['idlocal'])) {
@@ -23,6 +25,77 @@ if(isset($_GET['idlocal'])) {
 	$fonelocal='Indisponível';
 	$sitelocal='Indisponível';
 	$locallocal='Nenhum local selecionado.';
+	$objetivolocal='Nenhum local selecionado.';
+	$informacoeslocal='Nenhum local selecionado.';
+}
+define('APP_ID', '1612177639056622');
+define('APP_SECRET', 'b94f4cf527c23d802717b35206043b74');
+define('REDIRECT_URL','http://localhost/locdot/locdot/app/index.php');
+
+//INCLUDING LIBRARIES 
+require_once('lib/Facebook/FacebookSession.php');
+require_once('lib/Facebook/FacebookRequest.php');
+require_once('lib/Facebook/FacebookResponse.php');
+require_once('lib/Facebook/FacebookSDKException.php');
+require_once('lib/Facebook/FacebookRequestException.php');
+require_once('lib/Facebook/FacebookRedirectLoginHelper.php');
+require_once('lib/Facebook/FacebookAuthorizationException.php');
+require_once('lib/Facebook/FacebookAuthorizationException.php');
+require_once('lib/Facebook/GraphObject.php');
+require_once('lib/Facebook/GraphUser.php');
+require_once('lib/Facebook/GraphSessionInfo.php');
+require_once('lib/Facebook/Entities/AccessToken.php');
+require_once('lib/Facebook/HttpClients/FacebookCurl.php');
+require_once('lib/Facebook/HttpClients/FacebookHttpable.php');
+require_once('lib/Facebook/HttpClients/FacebookCurlHttpClient.php');
+
+ //USING NAMESPACES
+use Facebook\FacebookSession;
+use Facebook\FacebookRedirectLoginHelper;
+use Facebook\FacebookRequest;
+use Facebook\FacebookResponse;
+use Facebook\FacebookSDKException;
+use Facebook\FacebookRequestException;
+use Facebook\FacebookAuthorizationException;
+use Facebook\GraphObject;
+use Facebook\GraphUser;
+use Facebook\GraphSessionInfo;
+use Facebook\HttpClients\FacebookHttpable;
+use Facebook\HttpClients\FacebookCurlHttpClient;
+use Facebook\HttpClients\FacebookCurl;
+
+ //STARTING SESSION
+session_start();
+
+
+
+FacebookSession::setDefaultApplication(APP_ID,APP_SECRET);
+
+$helper = new FacebookRedirectLoginHelper(REDIRECT_URL);
+
+$sess = $helper->getSessionFromRedirect();
+
+
+if(isset($_REQUEST['logout'])){
+	unset($_SESSION['token']);
+}
+
+if(isset($_SESSION['token'])){
+	$sess = new FacebookSession($_SESSION['token']);
+}
+
+$logout = 'http://localhost/locdot/locdot/app/index.php?logout=true';
+
+if(isset($sess)){
+	$_SESSION['token']=$sess->getToken();
+
+	$request  = new FacebookRequest($sess, 'GET', '/me');
+	$response = $request->execute();
+	$graph = $response->getGraphObject(GraphUser::className());
+	$name = $graph->getName();
+	$id = $graph->getId();
+	$img = 'https://graph.facebook.com/'.$id.'/picture?width=20';
+
 }
 ?>
 <!DOCTYPE html>
@@ -48,18 +121,18 @@ if(isset($_GET['idlocal'])) {
 
 	$(document).ready(function(){
 
-    $('a#copy-description').zclip({
-        path:'http://robugos.com/locdot/app/bootstrap/js/ZeroClipboard.swf',
-        copy:$('p#description').text(),
-    });
+		$('a#copy-description').zclip({
+			path:'http://robugos.com/locdot/app/bootstrap/js/ZeroClipboard.swf',
+			copy:$('p#description').text(),
+		});
 
     // The link with ID "copy-description" will copy
     // the text of the paragraph with ID "description"
 
 
     $('a#copy-dynamic').zclip({
-        path:'http://robugos.com/locdot/app/bootstrap/js/ZeroClipboard.swf',
-        copy:function(){return $('p#dynamic').val();}
+    	path:'http://robugos.com/locdot/app/bootstrap/js/ZeroClipboard.swf',
+    	copy:function(){return $('p#dynamic').val();}
     });
 
     // The link with ID "copy-dynamic" will copy the current value
@@ -98,10 +171,10 @@ if(isset($_GET['idlocal'])) {
         });
         
         $('#lpeditor').load(function(){
-                $("#lpeditor").contents().find(".draggable").draggable({
-                    iframeFix: true,
-                });
-            }); 
+        	$("#lpeditor").contents().find(".draggable").draggable({
+        		iframeFix: true,
+        	});
+        }); 
     });
 	</script>
 </head>
@@ -143,9 +216,36 @@ if(isset($_GET['idlocal'])) {
 								<!--<li role="separator" class="divider"></li>-->
 							</ul>
 						</li>
+						<?php
+								if(isset($sess)){
+						echo '<li class="dropdown" id="listalocaisfavoritos">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Favoritos<span class="caret"></span></a>
+							<ul class="dropdown-menu">';
+									$sql = "SELECT locais.idLocal, locais.nomeLocal FROM locais, fav_usuario_local WHERE fav_usuario_local.idLocal = locais.idLocal AND fav_usuario_local.idUsuario = ".$id." ORDER BY locais.nomeLocal ASC";
+									if ($pdo->query($sql)<>"") {
+										foreach ($pdo->query($sql) as $row) {
+											echo '<li><a href="?idlocal='.$row['idLocal'].'">'.$row['nomeLocal'].'</a></li>';
+										}
+									}else{
+									echo '<li><a href="#">Nenhum local favorito.</a></li>';
+								}
+								}
+								?>
+								<!--<li role="separator" class="divider"></li>-->
+							</ul>
+						</li>
 					</ul>
 					<ul class="nav navbar-nav navbar-right">
 						<li><a href="#"><?php echo $nomelocal <> '' ? "Você está em <b>".$nomelocal : ""; ?></b></a></li>
+						<li>
+							<?php 
+							if(isset($sess)){
+								echo "<a href='".$logout."' class='facebooklogin'>Logout</a>";
+							}else{
+								echo "<a class='facebooklogin' href='".$helper->getLoginUrl()."'>Entrar com o Facebook</a>";
+							}
+							?>
+						</li>
 					</ul>
 					<!--<form class="navbar-form navbar-left" role="search">
 						<div class="form-group">
@@ -159,8 +259,8 @@ if(isset($_GET['idlocal'])) {
 		<div class="row">
 			<div role="complementary" class="col-md-7">
 				<div class='embed-container'>
-						<!--< ?php include("map.php"); ?>-->
-						<iframe src='map.php' width='600' height='450' frameborder='0' style='border:0' id="lpeditor" scrolling="no"></iframe>
+					<!--< ?php include("map.php"); ?>-->
+					<iframe src='map.php' width='600' height='450' frameborder='0' style='border:0' id='lpeditor' scrolling='no'></iframe>";
 				</div>
 			</div>
 			<div role="main" class="col-md-5">
@@ -221,17 +321,41 @@ if(isset($_GET['idlocal'])) {
 						</div>
 					</div>
 				</div>
+				<!--< ?php 
+				if(isset($sess)){
+					if($idlocal!=NULL){
+						$con = new conexao(); // instancia classe de conxao
+						$con->connect(); // abre conexao com o banco
+						$consulta = mysql_query("SELECT * FROM fav_usuario_local WHERE idUsuario = $id AND idLocal = $idlocal");
+						if (mysql_num_rows($consulta) == 0) {
+							echo "<div align='center'><form action='' method='post'><input type='submit' class='btn btn-lg btn-primary' name='adicionar' value='Adicionar aos favoritos' /></form></div>";
+							if(isset ($_POST['adicionar'])){
+								$crud = new local('fav_usuario_local');  // instancia classe com as operaçoes crud, passando o nome da tabela como parametro
+					        	$crud->inserir("idUsuario,idLocal", "'$id','$idlocal'",'$idlocal'); // utiliza a funçao INSERIR da classe crud
+					        }
+
+					    }else{
+					    	echo "<div align='center'><form action='' method='post'><input type='submit' class='btn btn-lg btn-primary' name='remover' value='Remover dos favoritos' /></form></div>";
+					    	if(isset ($_POST['remover'])){
+								$crud = new local('fav_usuario_local');  // instancia classe com as operaçoes crud, passando o nome da tabela como parametro
+					        	$crud->excluir("idUsuario=$id AND idLocal=$idlocal",'$idlocal'); // utiliza a funçao INSERIR da classe crud
+					        }
+					    }
+					    $con->disconnect();
+					}
+				}
+				?>-->
+					</div>
+				</div>
+				<footer class="row">
+					&copy; 2015 loc.dot. Todos os direitos reservados.
+				</footer>
 			</div>
-		</div>
-		<footer class="row">
-			&copy; 2015 loc.dot. Todos os direitos reservados.
-		</footer>
-	</div>
 
-	<!-- jQuery (necessario para os plugins Javascript Bootstrap) -->
+			<!-- jQuery (necessario para os plugins Javascript Bootstrap) -->
 
-</body>
-</html>
-<?php
-Database::disconnect();
-?>
+		</body>
+		</html>
+		<?php
+		Database::disconnect();
+		?>
